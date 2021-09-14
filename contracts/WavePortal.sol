@@ -18,7 +18,7 @@ contract WavePortal {
 
     Wave[] waves;
 
-    constructor() {
+    constructor() payable{
         console.log("if we have a decentralized web, how is mr. spider going to catch bugs");
     }
 
@@ -30,6 +30,12 @@ contract WavePortal {
         waves.push(Wave(msg.sender, _message, block.timestamp));
 
         emit NewWave(msg.sender, block.timestamp, _message);
+
+
+        uint prizeAmount = 0.00001 ether;
+        require(prizeAmount <= address(this).balance, "Oops no more conceptual bucks");
+        (bool success,) = (msg.sender).call{value: prizeAmount}("");
+        require(success, "Failed to send te moonies");
     }
 
     //tkeber on stack exchange
