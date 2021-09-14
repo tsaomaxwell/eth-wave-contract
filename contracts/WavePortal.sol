@@ -7,14 +7,29 @@ import "hardhat/console.sol";
 contract WavePortal {
     uint totalWaves;
     string lastWaver;
+
+    event NewWave(address indexed from, uint timestamp, string message);
+
+    struct Wave {
+        address waver;
+        string message;
+        uint timestamp;
+    }
+
+    Wave[] waves;
+
     constructor() {
         console.log("if we have a decentralized web, how is mr. spider going to catch bugs");
     }
 
-    function wave() public {
+    function wave(string memory _message) public {
         totalWaves += 1;
         lastWaver = toAsciiString(msg.sender);
-        console.log("%s is waved!", msg.sender);
+        console.log("%s waved w/ %s!", msg.sender, _message);
+
+        waves.push(Wave(msg.sender, _message, block.timestamp));
+
+        emit NewWave(msg.sender, block.timestamp, _message);
     }
 
     //tkeber on stack exchange
@@ -43,5 +58,9 @@ contract WavePortal {
     function getLastWaver() view public returns (string memory) {
         console.log("%s waved last", lastWaver);
         return lastWaver;
+    }
+
+    function getAllWaves() view public returns (Wave[] memory){
+        return waves;
     }
 }
